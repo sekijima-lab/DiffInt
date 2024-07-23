@@ -39,7 +39,8 @@ tar xvzf DiffInt_crossdock_data.tar.gz
 
 ### Data construction by yourself
 (You don't need to construct data by yourself.)
-Download and extract the dataset as described by the authors of [Pocket2Mol](https://github.com/pengxingang/Pocket2Mol/tree/main/data).  Download the dataset archive `crossdocked_pocket10.tar.gz` and the split file `split_by_name.pt` to `data` directory.
+Download and extract the dataset as described by the authors of [Pocket2Mol](https://github.com/pengxingang/Pocket2Mol/tree/main/data).  
+Download the dataset archive `crossdocked_pocket10.tar.gz` and the split file `split_by_name.pt` to `data` directory.
 ```bash
 .
 ├── data
