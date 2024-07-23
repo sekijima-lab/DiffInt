@@ -39,7 +39,7 @@ tar xvzf DiffInt_crossdock_data.tar.gz
 
 ### Data construction by yourself
 (You don't need to construct data by yourself.)
-Download and extract the dataset as described by the authors of [Pocket2Mol](https://github.com/pengxingang/Pocket2Mol/tree/main/data)
+Download and extract the dataset as described by the authors of [Pocket2Mol](https://github.com/pengxingang/Pocket2Mol/tree/main/data).  
 Download the dataset archive `crossdocked_pocket10.tar.gz` and the split file `split_by_name.pt` to `data` directory.
 ```bash
 .
@@ -58,16 +58,16 @@ python process_crossdock.py /data/directory/path/ --outdir /output/directory/pat
 ```
 For example
 ```bash
-python process_crossdock.py data/ --outdir ./data/crossdocked_ca/
+python process_crossdock.py data/ --outdir data/crossdocked_ca/
 ```
 
 data preparation step 2: add hydrogen bonds information
 ```bash
-python hbond_double.py --data_dir /step_1/directory/path/ --out_dir /step_2/directory/path// --pdb_dir /pdb_data/directory/path/
+python hbond_double.py --data_dir /step_1/directory/path/ --out_dir /step_2/directory/path/ --pdb_dir /pdb_data/directory/path/
 ```
 For example
 ```bash
-python hbond_double.py --data_dir ./data/crossdock_ca/ --out_dir ./data/crossdocked_ca_Int/ --pdb_dir ./data/crossdocked_pocket10/
+python hbond_double.py --data_dir data/crossdock_ca/ --out_dir data/crossdocked_ca_Int/ --pdb_dir data/crossdocked_pocket10/
 ```
 
 ### Training
