@@ -79,7 +79,7 @@ python -u train.py --config config/DiffInt_ca_double.yml
 Generation of 100 ligand molecules for 100 protein pockets.
 
 ```bash
-python --checkpoint checkpoint_file --test_dir /data/directory/path/ --outdir /out/directory/path/
+python test_npz.py --checkpoint checkpoint_file --test_dir /data/directory/path/ --outdir /out/directory/path/
 ```
 For example
 ```bash
@@ -89,7 +89,11 @@ python test_npz.py --checkpoint checkpoints/best_model.ckpt --test_dir DiffInt_c
 Download generated molecules: [sdf_files](https://drive.google.com/file/d/1c0QSldeYq7mVF7_iGiJHKV7IiRxfi9mA/view?usp=sharing)
 
 ### Generate 100 ligand molecules for one pocket
-You can use Google Colabratory
+```bash
+python test_single.py --checkpoint checkpoint_file --outdir /out/directory/path/ --pdb /pdb/file/path/ --sdf /sdf/file/path/
+```
+
+Or you can use Google Colabratory
 
 ```bash
 .

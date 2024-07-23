@@ -206,9 +206,9 @@ def process_data_h(sdf_file, pdb_file, npz_name):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--checkpoint', type=Path,default=None)
-    parser.add_argument('--test_file', type=Path,default=None)
-    parser.add_argument('--test_dir', type=Path,default=None)
     parser.add_argument('--outdir', type=Path)
+    parser.add_argument('--pdb', type=str,default=None)
+    parser.add_argument('--sdf', type=str,default=None)
     parser.add_argument('--n_samples', type=int, default=100)
     parser.add_argument('--all_frags', action='store_true')
     parser.add_argument('--sanitize', action='store_true')
@@ -220,11 +220,12 @@ def main():
     parser.add_argument('--fix_n_nodes', action='store_true')
     parser.add_argument('--n_nodes_bias', type=int, default=0)
     parser.add_argument('--n_nodes_min', type=int, default=0)
-    parser.add_argument('--skip_existing', action='store_true')
+    parser.add_argument('--skip_existing', action='store_true',default=True)
     args = parser.parse_args()
 
-    
-    ligand_generation(outdir=args.outdir, test_file=args.test_file, checkpoint=args.checkpoint)
+    tmp1 = process_data(sdf_file=args.sdf, pdb_file=args.pdb)
+    tmp2 = process_data_h(sdf_file=args.sdf, pdb_file=args.pdb,npz_name=tmp1)   
+    ligand_generation(outdir=args.outdir, test_file=tmp2, checkpoint=args.checkpoint, save=True)
 
 
 if __name__ == "__main__":
