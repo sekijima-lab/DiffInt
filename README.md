@@ -63,7 +63,7 @@ python process_crossdock.py data/ --outdir data/crossdocked_ca/
 
 data preparation step 2: add hydrogen bonds information
 ```bash
-python hbond_double.py --data_dir /step_1/directory/path/ --out_dir /step_2/directory/path// --pdb_dir /pdb_data/directory/path/
+python hbond_double.py --data_dir /step_1/directory/path/ --out_dir /step_2/directory/path/ --pdb_dir /pdb_data/directory/path/
 ```
 For example
 ```bash
