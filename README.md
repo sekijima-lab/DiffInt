@@ -86,7 +86,7 @@ For example
 python test_npz.py --checkpoint checkpoints/best_model.ckpt --test_dir DiffInt_crossdock_data/ --outdir sample
 ```
 
-Generated molecules used in the paper are ```bash example/DiffInt_generated_molecules.tar.gz ```
+Generated molecules used in the paper are ```example/DiffInt_generated_molecules.tar.gz ```
 
 
 ### Generate 100 ligand molecules for one pocket
