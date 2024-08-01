@@ -51,6 +51,7 @@ def data_create(file, base_path):
 
     pdb_name = [x.split('.pdb_')[0]+'.pdb' for x in file['names']]
     lig_name = [x.split('.pdb_')[1] for x in file['names']]
+    one_hot_len = len(file['pocket_one_hot'][0])
 
     po_one_tmp1 = np.append(file['pocket_one_hot'],np.zeros((len(file['pocket_one_hot']),2)),axis=1)
  
@@ -65,13 +66,13 @@ def data_create(file, base_path):
         ligand.removeh()
 
         int_id, inter_coords, inter_one_hot = hbond_create(protein, ligand)
-        [inter_id.append(x) for x in int_id]
+        if len(int_id[0])>0: [inter_id.append(x) for x in int_id]
         [inter_mask.append(x) for x in np.full(len(int_id),i)]
 
         # one hot
         if len(inter_one_hot)>0:
             po_int_cor_tmp3 = np.append(po_cor_tmp2[i],inter_coords,axis=0)
-            inter_one_hot = np.append(np.zeros((len(inter_one_hot),20)),inter_one_hot,axis=1)
+            inter_one_hot = np.append(np.zeros((len(inter_one_hot),one_hot_len)),inter_one_hot,axis=1)
             po_int_one_tmp3 = np.append(po_one_tmp2[i],inter_one_hot,axis=0)
         else:
             po_int_cor_tmp3 = po_cor_tmp2[i]
