@@ -10,20 +10,16 @@ from tqdm import tqdm
 from lightning_modules import LigandPocketDDPM
 from analysis.molecule_builder import build_molecule, process_molecule
 from dataset import ProcessedLigandPocketDataset
-from constants import dataset_params
 import utils
 from constants import dataset_params, FLOAT_TYPE, INT_TYPE
 from equivariant_diffusion.conditional_model import ConditionalDDPM
 from torch_scatter import scatter_add, scatter_mean
-from constants import dataset_params
-
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('--checkpoint', type=Path,default=None)
     parser.add_argument('--test_file', type=Path,default=None)
     parser.add_argument('--test_dir', type=Path,default=None)
-    #parser.add_argument('--test_list', type=Path, default=None)
     parser.add_argument('--outdir', type=Path)
     parser.add_argument('--n_samples', type=int, default=100)
     parser.add_argument('--all_frags', action='store_true')
@@ -59,7 +55,7 @@ if __name__ == "__main__":
     model = model.to(device)
     
     test_dataset = ProcessedLigandPocketDataset(
-                Path(args.test_dir, 'test_1a2g.npz'), center=False)
+                Path(args.test_dir, 'test.npz'), center=False)
     
     num_nodes_lig = None
     pbar = tqdm(test_dataset)
