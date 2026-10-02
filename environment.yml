@@ -56,7 +56,6 @@ dependencies:
   - fsspec=2023.6.0=pyh1a96a4e_0
   - giflib=5.2.1=h0b41bf4_3
   - gitdb=4.0.10=pyhd8ed1ab_0
-  - gitpython=3.1.31=pyhd8ed1ab_0
   - glib=2.69.1=h4ff587b_1
   - gmp=6.2.1=h295c915_3
   - gmpy2=2.1.2=py310heeb90bb_0
@@ -239,6 +238,8 @@ dependencies:
   - zstandard=0.19.0=py310h5eee18b_0
   - zstd=1.5.2=h8a70e8d_1
   - pip:
+      # Conda's 3.1.62 build requires Python >=3.11; PyPI supports Python 3.10.
+      - gitpython==3.1.62
       - anyio==3.7.1
       - argon2-cffi==21.3.0
       - argon2-cffi-bindings==21.2.0
