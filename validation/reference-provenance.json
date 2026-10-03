@@ -1,0 +1,18 @@
+{
+  "reference_commit": "da22371",
+  "cpu_architecture": "macOS ARM64",
+  "python": "3.10.19",
+  "pytorch": "2.0.1",
+  "lightning": "1.7.4",
+  "rdkit": "2022.9.5",
+  "matplotlib": "3.5.3",
+  "scatter": "Unchanged 2.1.1 scatter.py and utils.py loaded without failing C++ init; add/mean use only native torch operations",
+  "full_numeric_artifacts": "Workspace diffint-runtime-validation/old/numeric.npz; repository stores all forward/loss values and 2048 regularly spaced elements of each gradient/weights array",
+  "sha256": {
+    "checkpoints/best_model.ckpt": "efb960b66f5a1c7c2b0d4594c4c21bdc84d9ae5648bf8d7119de5cf905324525",
+    "example/1a2g_A_rec.pdb": "a82f8eb53e1e587d51f0b1a2708fec1933cc081508937592d119db96367bbbe0",
+    "example/1a2g_A_rec.sdf": "6501f1f954669fc42491818d4b51769a9881343d6302c7c42a5c757b76a66080",
+    "torch-scatter/scatter.py": "ff6a3fc29e3461675986fb73a3a82f6a76c264adc4dd3e6d1dbd01e8d0f11be2",
+    "torch-scatter/utils.py": "0e3e310ffb443ff047116f8c330afb76dce2bbf3c00c3a029b44d9097ea195f9"
+  }
+}

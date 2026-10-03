@@ -6,37 +6,53 @@ This repository provides the source code and pretrained models for the [paper](h
 DiffInt is a diffusion-based generative model that explicitly incorporates hydrogen bond interactions for structure-based drug design. It introduces interaction particles to guide ligand generation within protein binding pockets.
 
 
-## Dependencies
+## Installation and runtime
 
-### Cuda environment
-| Software     | Version |
-|--------------|---------|
-| CUDA         | 11.8    |
-| cudnn        | 8.9.7   |
+The maintained runtime is Python **3.12.15** with PyTorch **2.14.1**, PyTorch
+Lightning **2.6.6**, NumPy **2.3.5**, RDKit **2026.3.6**, BioPython **1.88** and
+WandB **0.30.0**. `requirements-lock.txt` pins the resolved packages.
+NumPy remains at 2.3.5 because ODDT 0.7 uses `np.in1d`, removed in NumPy 2.4.
 
-### conda environment
+Create a new environment instead of changing an existing research environment.
+With a Python 3.12.15 interpreter and `uv` installed:
+
 ```bash
-conda env create -n Int-env -f environment.yml
+uv --no-config venv --python /path/to/python3.12.15 .venv
+source .venv/bin/activate
+uv --no-config pip install -c requirements-lock.txt -r requirements-build.txt
+uv --no-config pip install --no-build-isolation -r requirements.txt
+uv --no-config pip install --no-build-isolation --no-deps -e .
+uv --no-config pip check
+python -m unittest discover -s tests -p test_runtime.py -v
 ```
 
-| Software          | Version   |
-|-------------------|-----------|
-| Python            | 3.10.4    |
-| numpy             | 1.22.3    |
-| PyTorch           | 2.0.1     |
-| PyTorch cuda      | 11.8      |
-| Torchvision       | 0.15.2    |
-| Torchaudio        | 2.0.2     |
-| PyTorch Scatter   | 2.1.1     |
-| PyTorch Lightning | 1.7.4     |
-| RDKit             | 2022.03.2 |
-| WandB             | 0.13.1    |
-| BioPython         | 1.79      |
-| imageio           | 2.21.2    |
-| SciPy             | 1.7.3     |
-| OpenBabel         | 3.1.1     |
-| ODDT              | 0.7       |
+ODDT imports dependencies while building; the first installation step supplies
+those dependencies. The local runtime builds a small C extension with a C
+compiler (`clang`/`gcc`) and the Python development headers. It uses the system's
+`expf`/`tanhf`; it does not link an old PyTorch library.
+Open Babel is provided by `openbabel-wheel` inside this environment.
 
+Default **`--old-compatible`** mode uses CPU float32, scalar libm activations and
+explicit cross-product arithmetic to reduce differences from the historical
+CPU reference. **`--no-old-compatible`** selects standard current PyTorch math.
+The mode is saved in checkpoints and training `runtime.json`, and is printed
+when a model is created. The compatibility mode supports first-order gradients;
+it rejects mixed precision and higher-order gradients.
+
+[Validation results and limitations](validation/REPORT.md) cover macOS ARM64 CPU.
+The original Linux/CUDA environment is archived in
+[the historical environment record](validation/legacy-environment.md).
+CUDA/GPU, full training, full dataset evaluation and real docking have not been
+validated in this migration. To experiment with GPU execution, explicitly use
+standard math and set training `accelerator: gpu`; this is outside the measured scope.
+The obsolete Linux-specific `environment.yml` is replaced by the maintained CPU
+requirements, not a claim of a verified CUDA upgrade.
+
+Checkpoint loading uses `weights_only=True` with a small allowlist for legacy
+configuration types. NPZ datasets must contain numeric/string arrays; object
+arrays are rejected rather than implicitly unpickled. A legacy object dataset
+requires a separate, reviewed conversion before use. The bundled SA fragment
+table is a trusted pickle; do not replace it with untrusted content.
 
 ### Data download
 Download the training, validation and test datasets: [Data](https://drive.google.com/file/d/1RwDXBRVLRcEjSNHTw1JG6TpNgNUIogX2/view?usp=sharing)
@@ -80,7 +96,7 @@ python hbond_double.py --data_dir data/crossdock_ca/ --out_dir data/crossdocked_
 
 ### Training
 ```bash
-python -u train.py --config config/DiffInt_ca_double.yml
+python -u train.py --config configs/DiffInt_ca_double.yml
 ```
 
 ### Molecule generation
@@ -102,7 +118,7 @@ Generated molecules used in the paper are ```example/DiffInt_generated_molecules
 python test_single.py --checkpoint checkpoint_file --outdir /out/directory/path/ --pdb /pdb/file/path/ --sdf /sdf/file/path/
 ```
 
-Or you can use Google Colabratory (This notebook has been confirmed to work on May 28, 2025.)
+The Colab notebook is an isolated-environment template requiring Python 3.12.15 or later. Its setup and renderer use a separate interpreter; execution on Google Colab has not been validated for this migration.
 
 ```bash
 .

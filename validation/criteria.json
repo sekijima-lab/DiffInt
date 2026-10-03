@@ -1,0 +1,12 @@
+{
+  "frozen_before_comparison": true,
+  "cpu_threads": 1,
+  "forward_max_abs": 0.00001,
+  "loss_max_abs": 0.0001,
+  "gradient_max_abs": 0.0001,
+  "one_adamw_step_weights_max_abs": 0.0001,
+  "preprocessing": "exact arrays and hydrogen bond IDs",
+  "sampling_coordinates_max_abs": 0.001,
+  "sampling_atom_types": "exact",
+  "limits": "Author GPU environment, full training, full dataset and docking not covered"
+}

@@ -1,0 +1,126 @@
+{
+  "input.npz": {
+    "names": {
+      "exact": true,
+      "max_abs": 0
+    },
+    "lig_coords": {
+      "exact": true,
+      "max_abs": 0.0
+    },
+    "lig_one_hot": {
+      "exact": true,
+      "max_abs": 0.0
+    },
+    "lig_mask": {
+      "exact": true,
+      "max_abs": 0.0
+    },
+    "pocket_coords": {
+      "exact": true,
+      "max_abs": 0.0
+    },
+    "pocket_one_hot": {
+      "exact": true,
+      "max_abs": 0.0
+    },
+    "pocket_mask": {
+      "exact": true,
+      "max_abs": 0.0
+    },
+    "inter_id": {
+      "exact": true,
+      "max_abs": 0.0
+    },
+    "inter_mask": {
+      "exact": true,
+      "max_abs": 0.0
+    }
+  },
+  "numeric.npz": {
+    "forward_0_0": {
+      "exact": false,
+      "max_abs": 7.62939453125e-06
+    },
+    "forward_0_1": {
+      "exact": false,
+      "max_abs": 1.4901161193847656e-07
+    },
+    "forward_1_0": {
+      "exact": false,
+      "max_abs": 7.62939453125e-06
+    },
+    "forward_1_1": {
+      "exact": false,
+      "max_abs": 1.4901161193847656e-07
+    },
+    "forward_2_0": {
+      "exact": false,
+      "max_abs": 1.1920928955078125e-06
+    },
+    "forward_2_1": {
+      "exact": false,
+      "max_abs": 1.1920928955078125e-07
+    },
+    "forward_3_0": {
+      "exact": true,
+      "max_abs": 0.0
+    },
+    "forward_3_1": {
+      "exact": true,
+      "max_abs": 0.0
+    },
+    "forward_4_0": {
+      "exact": true,
+      "max_abs": 0.0
+    },
+    "forward_4_1": {
+      "exact": true,
+      "max_abs": 0.0
+    },
+    "loss_1729": {
+      "exact": true,
+      "max_abs": 0.0
+    },
+    "grad_1729": {
+      "exact": false,
+      "max_abs": 1.7695128917694092e-08
+    },
+    "loss_19": {
+      "exact": true,
+      "max_abs": 0.0
+    },
+    "grad_19": {
+      "exact": false,
+      "max_abs": 3.427267074584961e-07
+    },
+    "loss_73": {
+      "exact": true,
+      "max_abs": 0.0
+    },
+    "grad_73": {
+      "exact": false,
+      "max_abs": 5.960464477539063e-08
+    },
+    "weights_step": {
+      "exact": false,
+      "max_abs": 1.3984739780426025e-05
+    }
+  },
+  "sampling.npz": {
+    "ligand": {
+      "exact": false,
+      "max_abs": 8.993595838546753e-05
+    },
+    "pocket": {
+      "exact": false,
+      "max_abs": 1.3709068298339844e-05
+    },
+    "mask": {
+      "exact": true,
+      "max_abs": 0.0
+    }
+  },
+  "sampling_atom_types_exact": true,
+  "verdict": "PASS all frozen CPU thresholds with default old-compatible mode"
+}

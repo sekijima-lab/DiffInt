@@ -15,7 +15,9 @@ lr: 1.0e-3
 noise_factor: 1.0
 n_epochs: 1000
 num_workers: 20
-gpus: 4
+accelerator: 'cpu'
+old_compatible: True
+gpus: 4  # Used only when accelerator is explicitly set to 'gpu'.
 clip_grad: True
 augment_rotation: False
 augment_noise: 0

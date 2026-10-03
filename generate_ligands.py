@@ -9,6 +9,7 @@ from lightning_modules import LigandPocketDDPM
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
+    parser.add_argument('--old-compatible', action=argparse.BooleanOptionalAction, default=True)
     parser.add_argument('checkpoint', type=Path)
     parser.add_argument('--pdbfile', type=str)
     parser.add_argument('--resi_list', type=str, nargs='+', default=None)
@@ -26,11 +27,11 @@ if __name__ == "__main__":
 
     pdb_id = Path(args.pdbfile).stem
 
-    device = 'cuda' if torch.cuda.is_available() else 'cpu'
+    device = 'cpu' if args.old_compatible else ('cuda' if torch.cuda.is_available() else 'cpu')
 
     # Load model
     model = LigandPocketDDPM.load_from_checkpoint(
-        args.checkpoint, map_location=device)
+        args.checkpoint, map_location=device, old_compatible=args.old_compatible)
     model = model.to(device)
 
     if args.num_nodes_lig is not None:

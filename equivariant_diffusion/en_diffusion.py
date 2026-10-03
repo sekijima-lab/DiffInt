@@ -5,7 +5,7 @@ import numpy as np
 import torch
 from torch import nn
 import torch.nn.functional as F
-from torch_scatter import scatter_add, scatter_mean
+from diffint_runtime.scatter import scatter_add, scatter_mean
 
 import utils
 

@@ -1,0 +1,2 @@
+# CPU runtime validated on Python 3.12.15 / macOS ARM64.
+-r requirements-lock.txt

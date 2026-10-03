@@ -1,4 +1,5 @@
 from torch import nn
+from diffint_runtime.activations import tanh, cross
 import torch
 import math
 import subprocess
@@ -102,14 +103,14 @@ class EquivariantUpdate(nn.Module):
         row, col = edge_index
         input_tensor = torch.cat([h[row], h[col], edge_attr], dim=1)
         if self.tanh:
-            trans = coord_diff * torch.tanh(self.coord_mlp(input_tensor)) * self.coords_range
+            trans = coord_diff * tanh(self.coord_mlp(input_tensor), getattr(self, "old_compatible", False)) * self.coords_range
         else:
             trans = coord_diff * self.coord_mlp(input_tensor)
 
         if not self.reflection_equiv:
             phi_cross = self.cross_product_mlp(input_tensor)
             if self.tanh:
-                phi_cross = torch.tanh(phi_cross) * self.coords_range
+                phi_cross = tanh(phi_cross, getattr(self, "old_compatible", False)) * self.coords_range
             trans = trans + coord_cross * phi_cross
 
         if edge_mask is not None:
@@ -172,7 +173,8 @@ class EquivariantBlock(nn.Module):
             coord_cross = None
         else:
             coord_cross = coord2cross(x, edge_index, batch_mask,
-                                      self.norm_constant)
+                                      self.norm_constant,
+                                      old_compatible=getattr(self, "old_compatible", False))
         if self.sin_embedding is not None:
             distances = self.sin_embedding(distances)
         edge_attr = torch.cat([distances, edge_attr], dim=1)
@@ -306,18 +308,18 @@ def coord2diff(x, edge_index, norm_constant=1):
     return radial, coord_diff
 
 
-def coord2cross(x, edge_index, batch_mask, norm_constant=1):
+def coord2cross(x, edge_index, batch_mask, norm_constant=1, old_compatible=False):
 
     mean = unsorted_segment_sum(x, batch_mask,
                                 num_segments=batch_mask.max() + 1,
                                 normalization_factor=None,
                                 aggregation_method='mean')
     row, col = edge_index
-    cross = torch.cross(x[row]-mean[batch_mask[row]],
-                        x[col]-mean[batch_mask[col]], dim=1)
-    norm = torch.linalg.norm(cross, dim=1, keepdim=True)
-    cross = cross / (norm + norm_constant)
-    return cross
+    cross_product = cross(x[row]-mean[batch_mask[row]],
+                          x[col]-mean[batch_mask[col]], old_compatible)
+    norm = torch.linalg.norm(cross_product, dim=1, keepdim=True)
+    cross_product = cross_product / (norm + norm_constant)
+    return cross_product
 
 
 def unsorted_segment_sum(data, segment_ids, num_segments, normalization_factor, aggregation_method: str):

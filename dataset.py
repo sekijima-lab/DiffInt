@@ -9,7 +9,7 @@ class ProcessedLigandPocketDataset(Dataset):
 
         self.transform = transform
 
-        with np.load(npz_path, allow_pickle=True) as f:
+        with np.load(npz_path, allow_pickle=False) as f:
             data = {key: val for key, val in f.items()}
 
         # split data based on mask

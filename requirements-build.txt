@@ -1,0 +1,10 @@
+# Pre-install these because ODDT 0.7 imports its dependencies during build.
+numpy==2.3.5
+scipy==1.18.1
+scikit-learn==1.9.1
+pandas==3.0.6
+six==1.17.0
+setuptools==84.0.0
+wheel==0.48.0
+rdkit==2026.3.6
+openbabel-wheel==3.1.1.23

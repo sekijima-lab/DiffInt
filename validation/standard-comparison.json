@@ -1,0 +1,110 @@
+{
+  "input.npz": {
+    "names": {
+      "exact": true,
+      "max_abs": 0
+    },
+    "lig_coords": {
+      "exact": true,
+      "max_abs": 0.0
+    },
+    "lig_one_hot": {
+      "exact": true,
+      "max_abs": 0.0
+    },
+    "lig_mask": {
+      "exact": true,
+      "max_abs": 0.0
+    },
+    "pocket_coords": {
+      "exact": true,
+      "max_abs": 0.0
+    },
+    "pocket_one_hot": {
+      "exact": true,
+      "max_abs": 0.0
+    },
+    "pocket_mask": {
+      "exact": true,
+      "max_abs": 0.0
+    },
+    "inter_id": {
+      "exact": true,
+      "max_abs": 0.0
+    },
+    "inter_mask": {
+      "exact": true,
+      "max_abs": 0.0
+    }
+  },
+  "numeric.npz": {
+    "forward_0_0": {
+      "exact": false,
+      "max_abs": 2.86102294921875e-05
+    },
+    "forward_0_1": {
+      "exact": false,
+      "max_abs": 1.6093254089355469e-06
+    },
+    "forward_1_0": {
+      "exact": false,
+      "max_abs": 1.9073486328125e-05
+    },
+    "forward_1_1": {
+      "exact": false,
+      "max_abs": 1.0728836059570312e-06
+    },
+    "forward_2_0": {
+      "exact": false,
+      "max_abs": 2.9802322387695312e-06
+    },
+    "forward_2_1": {
+      "exact": false,
+      "max_abs": 1.4901161193847656e-06
+    },
+    "forward_3_0": {
+      "exact": false,
+      "max_abs": 1.6689300537109375e-06
+    },
+    "forward_3_1": {
+      "exact": false,
+      "max_abs": 1.5795230865478516e-06
+    },
+    "forward_4_0": {
+      "exact": false,
+      "max_abs": 2.0265579223632812e-06
+    },
+    "forward_4_1": {
+      "exact": false,
+      "max_abs": 1.8477439880371094e-06
+    },
+    "loss_1729": {
+      "exact": false,
+      "max_abs": 3.725290298461914e-09
+    },
+    "grad_1729": {
+      "exact": false,
+      "max_abs": 1.9744038581848145e-07
+    },
+    "loss_19": {
+      "exact": false,
+      "max_abs": 3.725290298461914e-08
+    },
+    "grad_19": {
+      "exact": false,
+      "max_abs": 1.1101365089416504e-06
+    },
+    "loss_73": {
+      "exact": true,
+      "max_abs": 0.0
+    },
+    "grad_73": {
+      "exact": false,
+      "max_abs": 8.791685104370117e-07
+    },
+    "weights_step": {
+      "exact": false,
+      "max_abs": 7.038936018943787e-05
+    }
+  }
+}

@@ -3,7 +3,7 @@ import math
 import numpy as np
 import torch
 import torch.nn.functional as F
-from torch_scatter import scatter_add, scatter_mean
+from diffint_runtime.scatter import scatter_add, scatter_mean
 
 import utils
 from equivariant_diffusion.en_diffusion import EnVariationalDiffusion

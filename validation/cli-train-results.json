@@ -1,0 +1,14 @@
+{
+  "compatible": {
+    "global_step": 2,
+    "processed_epochs": 2,
+    "optimizer_state_parameters": 130,
+    "mode_saved": true
+  },
+  "standard": {
+    "global_step": 2,
+    "processed_epochs": 2,
+    "optimizer_state_parameters": 130,
+    "mode_saved": false
+  }
+}

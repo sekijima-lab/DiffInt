@@ -1,7 +1,9 @@
 import argparse
 from argparse import Namespace
-from pathlib import Path
+from pathlib import Path, PosixPath, WindowsPath
 import warnings
+import json
+import sys
 
 import torch
 import pytorch_lightning as pl
@@ -9,6 +11,7 @@ import yaml
 import numpy as np
 
 from lightning_modules import LigandPocketDDPM
+from diffint_runtime.checkpoints import load_checkpoint
 
 
 def merge_args_and_yaml(args, config_dict):
@@ -44,8 +47,10 @@ def merge_configs(config, resume_config):
 if __name__ == "__main__":
     p = argparse.ArgumentParser()
     p.add_argument('--config', type=str, required=True)
+    p.add_argument('--old-compatible', action=argparse.BooleanOptionalAction, default=None)
     p.add_argument('--resume', type=str, default=None)
     args = p.parse_args()
+    requested_math_mode = args.old_compatible
 
     with open(args.config, 'r') as f:
         config = yaml.safe_load(f)
@@ -55,12 +60,16 @@ if __name__ == "__main__":
     # Get main config
     ckpt_path = None if args.resume is None else Path(args.resume)
     if args.resume is not None:
-        resume_config = torch.load(
-            ckpt_path, map_location=torch.device('cpu'))['hyper_parameters']
+        resume_config = load_checkpoint(ckpt_path)['hyper_parameters']
 
         config = merge_configs(config, resume_config)
 
     args = merge_args_and_yaml(args, config)
+    args.old_compatible = requested_math_mode if requested_math_mode is not None else config.get("old_compatible", True)
+    args.accelerator = getattr(args, "accelerator", "cpu" if args.old_compatible else "gpu")
+
+    if args.old_compatible and args.accelerator != "cpu":
+        raise ValueError("Old-compatible mode requires accelerator: cpu; use --no-old-compatible for standard GPU math")
 
     out_dir = Path(args.logdir, args.run_name)
     histogram_file = Path(args.datadir, 'size_distribution.npy')
@@ -89,8 +98,15 @@ if __name__ == "__main__":
         pocket_representation=args.pocket_representation,
         virtual_nodes=args.virtual_nodes,
         alpha_param=args.alpha_param,
-        alpha_power=args.alpha_power
+        alpha_power=args.alpha_power,
+        old_compatible=args.old_compatible
     )
+
+    out_dir.mkdir(parents=True, exist_ok=True)
+    (out_dir / "runtime.json").write_text(json.dumps({
+        "python": sys.version, "torch": torch.__version__, "numpy": np.__version__,
+        "lightning": pl.__version__, "old_compatible": args.old_compatible,
+        "accelerator": args.accelerator}, indent=2) + "\n")
 
     logger = pl.loggers.WandbLogger(
         save_dir=args.logdir,
@@ -118,9 +134,10 @@ if __name__ == "__main__":
         callbacks=[checkpoint_callback],
         enable_progress_bar=args.enable_progress_bar,
         num_sanity_val_steps=args.num_sanity_val_steps,
-        accelerator='gpu', devices=args.gpus,
-        strategy='ddp'
-        #strategy=('ddp' if args.gpus > 1 else None)
+        accelerator=args.accelerator,
+        devices=args.gpus if args.accelerator == 'gpu' else 1,
+        strategy='ddp' if args.accelerator == 'gpu' and args.gpus > 1 else 'auto'
     )
 
-    trainer.fit(model=pl_module, ckpt_path=ckpt_path)
+    with torch.serialization.safe_globals([Namespace, Path, PosixPath, WindowsPath]):
+        trainer.fit(model=pl_module, ckpt_path=ckpt_path, weights_only=True)

@@ -10,11 +10,12 @@ import torch.nn.functional as F
 from torch.utils.data import DataLoader
 import pytorch_lightning as pl
 import wandb
-from torch_scatter import scatter_add, scatter_mean
+from diffint_runtime.scatter import scatter_add, scatter_mean
 from Bio.PDB import PDBParser
-from Bio.PDB.Polypeptide import three_to_one
+from diffint_runtime.residues import three_to_one
 
 from constants import dataset_params, FLOAT_TYPE, INT_TYPE
+from diffint_runtime.activations import configure_math
 from equivariant_diffusion.dynamics import EGNNDynamics
 from equivariant_diffusion.en_diffusion import EnVariationalDiffusion
 from equivariant_diffusion.conditional_model import ConditionalDDPM, \
@@ -55,7 +56,8 @@ class LigandPocketDDPM(pl.LightningModule):
             alpha_param,
             alpha_power,
             pocket_representation='CA',
-            virtual_nodes=False
+            virtual_nodes=False,
+            old_compatible=True
     ):
         super(LigandPocketDDPM, self).__init__()
         self.save_hyperparameters()
@@ -151,7 +153,7 @@ class LigandPocketDDPM(pl.LightningModule):
             residue_nf=self.aa_nf,
             n_dims=self.x_dims,
             joint_nf=egnn_params.joint_nf,
-            device=egnn_params.device if torch.cuda.is_available() else 'cpu',
+            device='cpu',  # The Trainer or generation caller moves the complete model.
             hidden_nf=egnn_params.hidden_nf,
             act_fn=torch.nn.SiLU(),
             n_layers=egnn_params.n_layers,
@@ -191,6 +193,21 @@ class LigandPocketDDPM(pl.LightningModule):
             self.auxiliary_weight_schedule = WeightSchedule(
                 T=diffusion_params.diffusion_steps,
                 max_weight=loss_params.max_weight, mode=loss_params.schedule)
+
+        self.old_compatible = old_compatible
+        configure_math(self.ddpm, old_compatible)
+        print(f"[DiffInt] old_compatible={old_compatible}; "
+              f"torch={torch.__version__}; numpy={np.__version__}; lightning={pl.__version__}")
+
+    @classmethod
+    def load_from_checkpoint(cls, checkpoint_path, map_location="cpu", strict=True, **overrides):
+        from diffint_runtime.checkpoints import load_checkpoint
+        checkpoint = load_checkpoint(checkpoint_path, map_location)
+        parameters = dict(checkpoint["hyper_parameters"])
+        parameters.update(overrides)
+        model = cls(**parameters)
+        model.load_state_dict(checkpoint["state_dict"], strict=strict)
+        return model
 
     def configure_optimizers(self):
         return torch.optim.AdamW(self.ddpm.parameters(), lr=self.lr,
@@ -494,7 +511,7 @@ class LigandPocketDDPM(pl.LightningModule):
     def test_step(self, data, *args):
         self._shared_eval(data, 'test', *args)
 
-    def validation_epoch_end(self, validation_step_outputs):
+    def on_validation_epoch_end(self):
 
         # Perform validation on single GPU
         if not self.trainer.is_global_zero:
@@ -1007,7 +1024,7 @@ class LigandPocketDDPM(pl.LightningModule):
 
         return molecules
 
-    def configure_gradient_clipping(self, optimizer, optimizer_idx,
+    def configure_gradient_clipping(self, optimizer,
                                     gradient_clip_val, gradient_clip_algorithm):
 
         if not self.clip_grad:

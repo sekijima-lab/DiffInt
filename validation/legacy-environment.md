@@ -1,3 +1,9 @@
+# Historical Linux/CUDA environment
+
+Original pinned export, retained only as a historical reference.
+This environment has known security advisories and is not the current installation.
+
+```yaml
 name: Int-env
 channels:
   - pyg
@@ -307,3 +313,5 @@ dependencies:
       - websocket-client==1.6.1
       - widgetsnbextension==4.0.8
 prefix: /home/sako/miniconda3/envs/Int-env
+
+```

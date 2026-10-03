@@ -16,16 +16,16 @@ from dataset import ProcessedLigandPocketDataset
 import utils
 from constants import dataset_params, FLOAT_TYPE, INT_TYPE
 from equivariant_diffusion.conditional_model import ConditionalDDPM
-from torch_scatter import scatter_add, scatter_mean
+from diffint_runtime.scatter import scatter_add, scatter_mean
 from process_crossdock import process_ligand_and_pocket
 from hbond_double import hbond_create
 
 
-def ligand_generation(test_file, checkpoint, outdir=None, batch_size=120, n_samples=100, relax=True, all_frags=True, save=True):
+def ligand_generation(test_file, checkpoint, outdir=None, batch_size=120, n_samples=100, relax=True, all_frags=True, save=True, old_compatible=True):
     #t_pocket_start = time()      
-    device = 'cuda' if torch.cuda.is_available() else 'cpu'
+    device = 'cpu' if old_compatible else ('cuda' if torch.cuda.is_available() else 'cpu')
     x_dims = 3
-    model = LigandPocketDDPM.load_from_checkpoint(checkpoint, map_location=device)
+    model = LigandPocketDDPM.load_from_checkpoint(checkpoint, map_location=device, old_compatible=old_compatible)
     model = model.to(device)
 
     test_dataset = ProcessedLigandPocketDataset(test_file, center=False)
@@ -205,6 +205,7 @@ def process_data_h(sdf_file, pdb_file, npz_name):
 
 def main():
     parser = argparse.ArgumentParser()
+    parser.add_argument('--old-compatible', action=argparse.BooleanOptionalAction, default=True)
     parser.add_argument('--checkpoint', type=Path,default=None)
     parser.add_argument('--outdir', type=Path)
     parser.add_argument('--pdb', type=str,default=None)
@@ -225,7 +226,9 @@ def main():
 
     tmp1 = process_data(sdf_file=args.sdf, pdb_file=args.pdb)
     tmp2 = process_data_h(sdf_file=args.sdf, pdb_file=args.pdb,npz_name=tmp1)   
-    ligand_generation(outdir=args.outdir, test_file=tmp2, checkpoint=args.checkpoint, save=True)
+    ligand_generation(outdir=args.outdir, test_file=tmp2, checkpoint=args.checkpoint,
+                      n_samples=args.n_samples, batch_size=args.batch_size, save=True,
+                      old_compatible=args.old_compatible)
 
 
 if __name__ == "__main__":

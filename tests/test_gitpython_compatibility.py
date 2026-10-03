@@ -6,7 +6,7 @@ import tempfile
 import unittest
 
 import git
-from wandb.sdk.lib.git import GitRepo
+from wandb.sdk.lib.gitlib import GitRepo
 
 
 class GitCompatibility(unittest.TestCase):
@@ -46,7 +46,7 @@ class GitCompatibility(unittest.TestCase):
     def test_wandb_metadata_and_changes(self):
         tracker = GitRepo(str(self.repo_dir), lazy=False)
         self.assertTrue(tracker.enabled)
-        self.assertEqual(Path(tracker.root).resolve(), self.repo_dir.resolve())
+        self.assertEqual(Path(tracker.root_dir).resolve(), self.repo_dir.resolve())
         self.assertEqual(tracker.last_commit, self.command("rev-parse", "HEAD"))
         self.assertEqual(tracker.branch, "main")
         self.assertEqual(tracker.email, "fixture@example.invalid")
@@ -56,7 +56,7 @@ class GitCompatibility(unittest.TestCase):
         (self.repo_dir / "untracked.txt").write_text("fixture\n")
         self.assertTrue(tracker.dirty)
         self.assertTrue(tracker.is_untracked("untracked.txt"))
-        self.assertIn("+loss = 0.5", tracker.repo.git.diff())
+        self.assertIn("+loss = 0.5", tracker.run_git("diff"))
         self.assertFalse(tracker.is_untracked("train.py"))
         self.assertIsNone(tracker.get_upstream_fork_point())
 
@@ -73,7 +73,7 @@ class GitCompatibility(unittest.TestCase):
         linked = GitRepo(str(worktree), lazy=False)
         self.assertEqual(linked.last_commit, source.head.commit.hexsha)
         self.assertEqual(linked.branch, "linked")
-        self.assertEqual(Path(linked.root).resolve(), worktree.resolve())
+        self.assertEqual(Path(linked.root_dir).resolve(), worktree.resolve())
 
     @unittest.skipIf(os.environ.get("GITPYTHON_BASELINE") == "1", "pre-fix discovery is intentionally unsafe")
     def test_tracked_content_cannot_shadow_real_git_directory(self):

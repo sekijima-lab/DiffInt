@@ -13,10 +13,11 @@ from dataset import ProcessedLigandPocketDataset
 import utils
 from constants import dataset_params, FLOAT_TYPE, INT_TYPE
 from equivariant_diffusion.conditional_model import ConditionalDDPM
-from torch_scatter import scatter_add, scatter_mean
+from diffint_runtime.scatter import scatter_add, scatter_mean
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
+    parser.add_argument('--old-compatible', action=argparse.BooleanOptionalAction, default=True)
     parser.add_argument('--checkpoint', type=Path,default=None)
     parser.add_argument('--test_file', type=Path,default=None)
     parser.add_argument('--test_dir', type=Path,default=None)
@@ -38,7 +39,7 @@ if __name__ == "__main__":
     start = time()
     print('start time: ', start)
 
-    device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
+    device = 'cpu' if args.old_compatible else ('cuda:0' if torch.cuda.is_available() else 'cpu')
     x_dims = 3
 
     args.outdir.mkdir(exist_ok=args.skip_existing)
@@ -51,7 +52,7 @@ if __name__ == "__main__":
 
     # Load model
     model = LigandPocketDDPM.load_from_checkpoint(
-        args.checkpoint, map_location=device)
+        args.checkpoint, map_location=device, old_compatible=args.old_compatible)
     model = model.to(device)
     
     test_dataset = ProcessedLigandPocketDataset(
